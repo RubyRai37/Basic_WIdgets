@@ -1,9 +1,11 @@
+// import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 void main() {
   runApp(RubyApp());
 }
 
+//Scaffold its properties
 const page1 = "Home";
 const page2 = "Setting";
 const page3 = "Contact";
@@ -11,7 +13,7 @@ const page3 = "Contact";
 class RubyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       title: 'Get Started',
       home: Home(),
       debugShowCheckedModeBanner: false,
