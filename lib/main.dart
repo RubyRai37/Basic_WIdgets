@@ -7,8 +7,14 @@ void main() {
 
 //Scaffold its properties
 const page1 = "Home";
-const page2 = "Setting";
-const page3 = "Contact";
+const page2 = "Categories";
+const page3 = "Add Item";
+const page4 = "About Us";
+const page5 = "Share with friend";
+const page6 = "Rate and Review";
+const page7 = "Privacy and Policy";
+const page8 = "Setting";
+const page9 = "Contact";
 
 class RubyApp extends StatelessWidget {
   @override
@@ -29,28 +35,52 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  late List<Widget> _pages;
-  late Widget _page1;
-  late Widget _page2;
-  late Widget _page3;
-  late int _currentIndex;
-  late Widget _currentPage;
+  late List<Widget> _drawerPages;
+  late List<Widget> _bottomNavigationPages;
+  late Widget _page1,
+      _page2,
+      _page3,
+      _page4,
+      _page5,
+      _page6,
+      _page7,
+      _page8,
+      _page9;
+  late int _currentDrawerSelectedPage, _currentButtonNavigationSelectedPage;
+  late bool _checkBottomPage;
+  late Widget _currentlySelectedPageName;
 
   @override
   void initState() {
     super.initState();
-    _page1 = Page1();
-    _page2 = Page2();
-    _page3 = Page3(changePage: _changeTab);
-    _pages = [_page1, _page2, _page3];
-    _currentIndex = 0;
-    _currentPage = _page1;
+    _page1 = HomePage();
+    _page2 = CategoryPage();
+    _page3 = AddItemPage();
+    _page4 = AboutUsPage();
+    _page5 = SharePage();
+    _page6 = RateReviewPage();
+    _page7 = PrivacyPolicyPage();
+    _page8 = SettingPage();
+    _page9 = ContactPage(changePage: _changePage);
+    _drawerPages = [_page1, _page2, _page3, _page4, _page5, _page6, _page7];
+    _bottomNavigationPages = [_page1, _page8, _page9];
+    _currentDrawerSelectedPage = 0;
+    _currentButtonNavigationSelectedPage = 0;
+    _currentlySelectedPageName = _page1;
+    _checkBottomPage = false;
   }
 
-  void _changeTab(int index) {
+  void _changePage(int pageNum) {
     setState(() {
-      _currentIndex = index;
-      _currentPage = _pages[index];
+      _currentDrawerSelectedPage = pageNum;
+      _currentlySelectedPageName = _drawerPages[pageNum];
+    });
+  }
+
+  void _changeBottomNavigationPage(int pageNum) {
+    setState(() {
+      _currentButtonNavigationSelectedPage = pageNum;
+      _currentlySelectedPageName = _bottomNavigationPages[pageNum];
     });
   }
 
@@ -63,28 +93,43 @@ class _HomeState extends State<Home> {
           backgroundColor: Colors.orange,
         ),
         drawer: Drawer(
-            child: Container(
-          margin: EdgeInsets.only(top: 20.0),
-          child: Column(
-            children: [
-              _navigationItemListTitle(page2, 2),
-              _navigationItemListTitle(page1, 1),
-              _navigationItemListTitle(page3, 3),
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              UserAccountsDrawerHeader(
+                accountName: Text('Ruby Rai'),
+                accountEmail: Text('rubytorubs@gmail.com'),
+                currentAccountPicture: Image(
+                  image: AssetImage("Images/img.png"),
+                ),
+                decoration: BoxDecoration(color: Colors.orange),
+              ),
+              Column(
+                children: [
+                  _navigationItemListTitle(Icons.home, page1, 0, true),
+                  _navigationItemListTitle(Icons.dashboard, page2, 1, false),
+                  _navigationItemListTitle(
+                      Icons.add_to_photos, page3, 2, false),
+                  _navigationItemListTitle(Icons.info, page4, 3, false),
+                  _navigationItemListTitle(Icons.share, page5, 4, false),
+                  _navigationItemListTitle(Icons.rate_review, page6, 5, false),
+                  _navigationItemListTitle(Icons.flag, page7, 6, false),
+                ],
+              ),
             ],
           ),
-        )),
+        ),
         floatingActionButton: FloatingActionButton(
           backgroundColor: Colors.orange,
           onPressed: () {},
           child: Icon(Icons.add),
         ),
         bottomNavigationBar: BottomNavigationBar(
-          currentIndex: _currentIndex,
+          currentIndex: _currentButtonNavigationSelectedPage,
           items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(
                 icon: Icon(Icons.home),
                 label: "Home",
-                activeIcon: Icon(Icons.home),
                 backgroundColor: Colors.orange),
             BottomNavigationBarItem(
                 icon: Icon(Icons.settings),
@@ -95,72 +140,35 @@ class _HomeState extends State<Home> {
                 label: "Contact",
                 backgroundColor: Colors.orange)
           ],
-          selectedItemColor: Colors.orange,
-          onTap: (index) {
-            _changeTab(index);
+          selectedItemColor: Colors.red,
+          onTap: (clickedPageIndexNum) {
+            _changeBottomNavigationPage(clickedPageIndexNum);
           },
         ),
-        body: _currentPage,
+        body: _currentlySelectedPageName,
       ),
     );
   }
 
-  Widget _navigationItemListTitle(String title, int index) {
+  Widget _navigationItemListTitle(
+      IconData givenIcon, String title, int index, bool checkHomePage) {
     return ListTile(
+      leading: Icon(givenIcon),
       title: Text(
         '$title Page',
-        style: TextStyle(color: Colors.blue[400], fontSize: 22.0),
+        style: TextStyle(color: Colors.blue[400], fontSize: 18.0),
       ),
       onTap: () {
+        print(index);
         Navigator.pop(context);
-        _changeTab(index);
+        _changePage(index);
       },
     );
   }
 }
 
-class ShowDrawer extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return ListView(
-      children: <Widget>[
-        ListTile(
-          leading: Icon(Icons.home),
-          title: Text("Home"),
-          trailing: Icon(Icons.home),
-        ),
-        ListTile(
-          leading: Icon(Icons.home),
-          title: Text("Home"),
-          trailing: Icon(Icons.home),
-        ),
-        ListTile(
-          leading: Icon(Icons.home),
-          title: Text("Home"),
-          trailing: Icon(Icons.home),
-        ),
-        ListTile(
-          leading: Icon(Icons.home),
-          title: Text("Home"),
-          trailing: Icon(Icons.home),
-        ),
-        ListTile(
-          leading: Icon(Icons.home),
-          title: Text("Home"),
-          trailing: Icon(Icons.home),
-        ),
-        ListTile(
-          leading: Icon(Icons.home),
-          title: Text("Home"),
-          trailing: Icon(Icons.home),
-        )
-      ],
-    );
-  }
-}
-
-class Page1 extends StatelessWidget {
-  Page1({Key? key}) : super(key: key);
+class HomePage extends StatelessWidget {
+  HomePage({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -169,8 +177,17 @@ class Page1 extends StatelessWidget {
   }
 }
 
-class Page2 extends StatelessWidget {
-  const Page2({Key? key}) : super(key: key);
+class SettingPage extends StatelessWidget {
+  const SettingPage({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text('$page8 Page', style: Theme.of(context).textTheme.headline6),
+    );
+  }
+}
+
+class CategoryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -179,8 +196,53 @@ class Page2 extends StatelessWidget {
   }
 }
 
-class Page3 extends StatelessWidget {
-  Page3({Key? key, required this.changePage}) : super(key: key);
+class AboutUsPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text('$page4 Page', style: Theme.of(context).textTheme.headline6),
+    );
+  }
+}
+
+class AddItemPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text('$page3 Page', style: Theme.of(context).textTheme.headline6),
+    );
+  }
+}
+
+class PrivacyPolicyPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text('$page7 Page', style: Theme.of(context).textTheme.headline6),
+    );
+  }
+}
+
+class RateReviewPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text('$page6 Page', style: Theme.of(context).textTheme.headline6),
+    );
+  }
+}
+
+class SharePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text('$page5 Page', style: Theme.of(context).textTheme.headline6),
+    );
+  }
+}
+
+class ContactPage extends StatelessWidget {
+  ContactPage({Key? key, required this.changePage}) : super(key: key);
   final void Function(int) changePage;
   @override
   Widget build(BuildContext context) {
@@ -189,10 +251,10 @@ class Page3 extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text('$page3 Page', style: Theme.of(context).textTheme.headline6),
+          Text('$page9 Page', style: Theme.of(context).textTheme.headline6),
           ElevatedButton(
-            onPressed: () => changePage(0),
-            child: const Text('Switch to Home Page'),
+            onPressed: () => changePage(8),
+            child: const Text('Switch to Setting Page'),
           )
         ],
       ),
